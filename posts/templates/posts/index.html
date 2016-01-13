@@ -1,0 +1,23 @@
+{% extends 'posts/base.html' %}
+
+{% block title %}
+    All Posts | {{ block.super }}
+{% endblock title %}
+
+{% block content %}
+<h1>Posts</h1>
+
+<p><a href="{% url 'posts:create' %}">+ Create a new Post</a></p>
+
+<ul>
+    {% for post in posts %}
+    <li>
+        <a href="{{ post.get_absolute_url }}">{{ post.title }} on {{ post.created_at }}</a>
+        &dash;
+        <a href="{% url 'posts:edit' post.id %}">Edit</a>
+        &nbsp;
+        <a href="{% url 'posts:delete' post.id %}">Delete</a>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock content %}

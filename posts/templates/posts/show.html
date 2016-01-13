@@ -1,0 +1,17 @@
+{% extends 'posts/base.html' %}
+
+{% block title %}
+    {{ post.title }} | {{ block.super }}
+{% endblock title %}
+
+{% block content %}
+<article>
+    <h2>Post {{ post.title }} on {{ post.created_at }}</h2>
+
+    <div>
+        {{ post.content }}
+    </div>
+</article>
+
+<p><a href="{% url 'posts:index' %}">All Posts</a></p>
+{% endblock content %}

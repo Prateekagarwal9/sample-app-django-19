@@ -1,0 +1,15 @@
+{% extends 'posts/base.html' %}
+
+{% block title %}
+    {{ submitButtonText }} | {{ block.super }}
+{% endblock title %}
+
+{% block content %}
+<form action="" method="POST">
+    {% csrf_token %}
+    
+    {{ form.as_p }}
+
+    <input type="submit" value="{{ submitButtonText }}" />
+</form>
+{% endblock content %}
