@@ -2,15 +2,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>{% block title %}Try Django 1.9{% endblock title %}</title>
+    <title>{% block title %}Blog Django 1.9{% endblock title %}</title>
     <link rel="stylesheet" type="text/css" href="{% static 'posts/css/app.css' %}" />
     <meta charset="UTF-8" />
 </head>
 <body>
+    <script>(function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "//connect.facebook.net/fr_FR/sdk.js#xfbml=1&version=v2.5&appId=777258785651017";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));</script>
+    
     <div class="container">
         {% include 'posts/_flash.html' %}
 
         {% block content %}{% endblock content %}
     </div>
+
+    <div id="fb-root"></div>
 </body>
 </html>

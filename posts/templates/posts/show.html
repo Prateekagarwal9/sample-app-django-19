@@ -1,17 +1,63 @@
 {% extends 'posts/base.html' %}
 
+{% load urlify %}
+
 {% block title %}
     {{ post.title }} | {{ block.super }}
 {% endblock title %}
 
 {% block content %}
+<p><a href="{% url 'posts:index' %}">All Posts</a></p>
+
 <article>
-    <h2>Post {{ post.title }} on {{ post.created_at }}</h2>
+   {% if post.image %}
+        <img src="{{ post.image.url }}" alt="{{ post.title }}" width="300">
+    {% endif %}
+
+    <h2>Post {{ post.title }} <small>{{ post.published_at|timesince }} ago</small></h2>
+
+    {% if post.draft %}
+        <span style="color: red; font-weight: bolder;">DRAFT !</span>
+    {% endif %}
+    {% if post.published_at > today %}
+        <span style="color: green; font-weight: bolder;">FUTURE POST!</span>
+    {% endif %}
+
+    {% if post.user.get_full_name %}
+    <p>Author: {{ post.user.get_full_name }}</p>
+    {% endif %}
+
+    {% if request.user.is_staff or request.user.is_superuser %}
+    <p><a href="{% url 'posts:edit' post.slug %}">Edit</a>
+        &nbsp;
+    <a href="{% url 'posts:delete' post.slug %}">Delete</a></p>
+    {% endif %}
+
+    <div class="fb-like" data-href="{{ request.build_absolute_uri }}" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></div>
+    
+
+    <p>
+        <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}">
+        Facebook
+        </a>
+
+        <a href="https://twitter.com/home?status={{ post.content|truncatechars:80|urlify }}%20{{ request.build_absolute_uri }}">
+        Twitter
+        </a>
+
+        <a href='https://plus.google.com/share?url={{ request.build_absolute_uri }}'>Google</a>
+
+        <a href="https://www.linkedin.com/shareArticle?mini=true&amp;url={{ request.build_absolute_uri }}&amp;title={{ post.title }}&amp;source={{ request.build_absolute_uri }}">
+        Linkedin
+        </a>
+
+        <a href="http://www.reddit.com/submit?url={{ request.build_absolute_uri }}/&amp;title={{ post.content|urlify }}">Reddit</a>        
+    </p>
 
     <div>
-        {{ post.content }}
+        {{ post.content|linebreaks }}
     </div>
-</article>
 
-<p><a href="{% url 'posts:index' %}">All Posts</a></p>
+    <div class="fb-comments" data-href="{{ request.build_absolute_uri }}" data-numposts="5"></div>
+</article>
 {% endblock content %}

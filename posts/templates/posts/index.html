@@ -1,23 +1,55 @@
 {% extends 'posts/base.html' %}
 
 {% block title %}
-    All Posts | {{ block.super }}
+    Welcome | {{ block.super }}
 {% endblock title %}
 
 {% block content %}
 <h1>Posts</h1>
+
+<form action="">
+    <input type="search" name="q" placeholder="Search Post" value="{{ request.GET.q }}" />
+    <input type="submit" value="Search" />
+</form>
 
 <p><a href="{% url 'posts:create' %}">+ Create a new Post</a></p>
 
 <ul>
     {% for post in posts %}
     <li>
-        <a href="{{ post.get_absolute_url }}">{{ post.title }} on {{ post.created_at }}</a>
+        {% if post.image %}
+        <img src="{{ post.image.url }}" alt="{{ post.title }}" width="200">
+        {% endif %}
+        {% if post.draft %}
+        <span style="color: red; font-weight: bolder;">DRAFT !</span>
+        {% endif %}
+        {% if post.published_at > today %}
+        <span style="color: green; font-weight: bolder;">FUTURE POST!</span>
+        {% endif %}
+        <a href="{{ post.get_absolute_url }}">{{ post.title }} <small>{{ post.published_at|timesince }} ago</small> by {% if post.user.get_full_name %}{{ post.user.get_full_name }}{% endif %}</a>
         &dash;
-        <a href="{% url 'posts:edit' post.id %}">Edit</a>
-        &nbsp;
-        <a href="{% url 'posts:delete' post.id %}">Delete</a>
+        {% if request.user.is_staff or request.user.is_superuser %}
+        <a href="{% url 'posts:edit' post.slug %}">Edit</a>
+            &nbsp;
+        <a href="{% url 'posts:delete' post.slug %}">Delete</a>
+        {% endif %}
     </li>
     {% endfor %}
 </ul>
+
+<div class="pagination">
+    <span class="step-links">
+        {% if posts.has_previous %}
+            <a href="?page={{ posts.previous_page_number }}{% if request.GET.q %}&amp;q={{ request.GET.q }}{% endif %}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ posts.number }} of {{ posts.paginator.num_pages }}.
+        </span>
+
+        {% if posts.has_next %}
+            <a href="?page={{ posts.next_page_number }}{% if request.GET.q %}&amp;q={{ request.GET.q }}{% endif %}">next</a>
+        {% endif %}
+    </span>
+</div>
 {% endblock content %}

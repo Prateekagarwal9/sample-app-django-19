@@ -18,10 +18,14 @@ from django.conf.urls import include, url
 from django.contrib import admin
 from django.conf.urls.static import static
 
+from posts.views import index as posts_index
+
 urlpatterns = [
+    url(r'^$', posts_index, name='home'),
     url(r'^posts/', include('posts.urls')),
     url(r'^admin/', admin.site.urls),
 ] 
 
 if settings.DEBUG == True:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
